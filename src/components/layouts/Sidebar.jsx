@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dashboard, People, Settings, Logout } from '@mui/icons-material';
+import { Dashboard, People, Settings, Logout, Castle, FormatListBulleted, Grain} from '@mui/icons-material';
 import {
   Drawer,
   Toolbar,
@@ -25,20 +25,30 @@ const Sidebar = ({ role }) => {
     const navigate = useNavigate();
     const drawerWidth = 240;
 
-    const adminMenu = [
-        { label: 'Dashboard', icon: <Dashboard />, path: '/' },
-        { label: 'Employee', icon: <People />, path: '/employees' },
-        // { label: 'Settings', icon: <Settings /> },
-        { label: 'Logout', icon: <Logout />, path: '/logout' },
-    ];
+    const roleMenus = {
+        admin: [
+            { label: 'Dashboard', icon: <Dashboard />, path: '/' },
+            { label: 'Employee', icon: <People />, path: '/employees' },
+            { label: 'Logout', icon: <Logout />, path: '/logout' },
+        ],
+        tl: [
+            { label: 'Dashboard', icon: <Dashboard />, path: '/' },
+            { label: 'Project', icon: <Castle />, path: '/projects' },
+            { label: 'Logout', icon: <Logout />, path: '/logout' },
+        ],
+        senior: [
+            { label: 'Dashboard', icon: <Dashboard />, path: '/' },
+            { label: 'Task', icon: <FormatListBulleted />, path: '/tasks' },
+            { label: 'Logout', icon: <Logout />, path: '/logout' },
+        ],
+        junior: [
+            { label: 'Dashboard', icon: <Dashboard />, path: '/' },
+            { label: 'Task List', icon: <Grain />, path: '/task-list' },
+            { label: 'Logout', icon: <Logout />, path: '/logout' },
+        ]
+    };
 
-    const userMenu = [
-        { label: 'Dashboard', icon: <Dashboard /> },
-        { label: 'Profile', icon: <People /> },
-        { label: 'Logout', icon: <Logout /> },
-    ];
-
-    const menuItems = role === 'admin' ? adminMenu : userMenu;
+    const menuItems = roleMenus[role] || [];
 
     const handleNavigation = (path) => {
         if (path === '/logout') {

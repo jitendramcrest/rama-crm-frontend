@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import employeeService from '../../services/employee';
-import EmployeeTable from '../../components/EmployeeTable';
+import projectService from '../../services/project';
+import ProjectTable from '../../components/ProjectTable';
 import { useLoader } from '../../context/LoaderContext';
 import { useNotification } from '../../context/NotificationContext';
 import MagicButton from '../../components/MagicButton';
@@ -8,47 +8,46 @@ import { Grid } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const EmployeePage = () => {
+const IndexPage = () => {
     const { showLoader, hideLoader } = useLoader();
     const { showNotification } = useNotification();
-    const [employees, setEmployees] = useState([]);
+    const [projects, setProject] = useState([]);
     const navigate = useNavigate();
 
-    const fetchEmployees = async () => {
+    const fetchProject = async () => {
         try {
             showLoader();
 
-            const res = await employeeService.fetchEmployee();
+            const res = await projectService.fetchProjects();
 
             if (res?.success) {
-                const employeeList = res?.data || [];
+                const projectList = res?.data || [];
 
-                if (employeeList.length > 0) {
-                    setEmployees(employeeList);
+                if (projectList.length > 0) {
+                    setProject(projectList);
                     showNotification({
-                        message: 'Employees loaded successfully!',
+                        message: 'Projects loaded successfully!',
                         severity: 'success',
                         position: 'top-right',
                     });
                 } else {
                     showNotification({
-                        message: 'No employees found.',
+                        message: 'No project found.',
                         severity: 'info',
                         position: 'top-center',
                     });
                 }
             } else {
                 showNotification({
-                    message: 'Failed to load employees',
+                    message: 'Failed to load project',
                     severity: 'error',
                     position: 'top-center',
                 });
             }
 
         } catch (error) {
-            console.error('Error fetching employees:', error);
             showNotification({
-                message: 'Something went wrong while fetching employees.',
+                message: 'Something went wrong while fetching project.',
                 severity: 'error',
                 position: 'top-center',
             });
@@ -58,11 +57,11 @@ const EmployeePage = () => {
     };
 
     useEffect(() => {
-        fetchEmployees();
+        fetchProject();
     }, []);
 
-    const addEmployee = () => {
-        navigate('/employee/add');
+    const addProject = () => {
+        navigate('/project/add');
     };
 
     return (
@@ -70,19 +69,19 @@ const EmployeePage = () => {
             {/* Header Row with Button */}
             <Grid container alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
                 <Grid item>
-                    <h2 style={{ margin: 0 }}>Employees List</h2>
+                    <h2 style={{ margin: 0 }}>Projects List</h2>
                 </Grid>
                 <Grid item>
-                    <MagicButton onClick={addEmployee} fullWidth={false} startIcon={<Add />}>
+                    <MagicButton onClick={addProject} fullWidth={false} startIcon={<Add />}>
                         Add
                     </MagicButton>
                 </Grid>
             </Grid>
 
-            {/* Employee Table */}
-            <EmployeeTable employees={employees} onEmployeeUpdated={fetchEmployees} />
+            {/* Project Table */}
+            <ProjectTable projects={projects} onProjectUpdated={fetchProject} />
         </>
     );
 };
 
-export default EmployeePage;
+export default IndexPage;

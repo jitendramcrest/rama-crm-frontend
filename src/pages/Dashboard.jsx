@@ -5,7 +5,7 @@ import {
   Card,
   CardContent
 } from '@mui/material';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const userData = useSelector((state) => state?.authData?.user);

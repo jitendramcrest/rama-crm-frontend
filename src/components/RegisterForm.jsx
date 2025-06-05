@@ -8,7 +8,12 @@ import { messages } from "../utils/messages";
 
 export default function RegisterForm() {
     const navigate = useNavigate();
-    const roles = ['admin', 'tl', 'senior', 'junior'];
+    const roles = [
+        { value: 'admin', label: 'Admin' },
+        { value: 'tl', label: 'Team Lead' },
+        { value: 'senior', label: 'Senior' },
+        { value: 'junior', label: 'Junior' }
+    ];
     const [form, setForm] = useState({ name: '', email: '', password: '', role: '' })
     const { showNotification } = useNotification();
     const [error, setError] = useState({});
@@ -117,8 +122,10 @@ export default function RegisterForm() {
                     required
                     fullWidth
                     >
-                    {roles.map((role) => (
-                        <MenuItem key={role} value={role}>{role}</MenuItem>
+                    {roles.map(role => (
+                        <MenuItem key={role.value} value={role.value}>
+                        {role.label}
+                        </MenuItem>
                     ))}
                     </TextField>
                     {error?.role && <p className="text-red-500 text-sm">{error.role[0]}</p>}

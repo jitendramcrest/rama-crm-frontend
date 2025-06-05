@@ -16,6 +16,16 @@ class EmployeeService {
     const response = handleApiResponse(axiosInstance.get(`/employees/${id}`));
     return response;
   }
+
+  async updateEmployee(data,id) {
+    const response = handleApiResponse(axiosInstance.put(`/employees/${id}`, data));
+    return response;
+  }
+  
+  async deleteEmployee(id) {
+    const response = handleApiResponse(axiosInstance.delete(`/employees/${id}`));
+    return response;
+  }
 }
 
 const employeeService = new EmployeeService();
