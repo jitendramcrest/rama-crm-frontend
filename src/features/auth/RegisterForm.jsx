@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { TextField, Button, MenuItem, Typography, Paper } from '@mui/material'
-import MagicButton from "../components/MagicButton";
-import authService from "../services/auth";
+import { TextField, MenuItem, Typography, Paper } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../context/NotificationContext';
-import { messages } from "../utils/messages";
+import MagicButton from "@components/common/MagicButton";
+import authService from "@services/auth";
+import { useNotification } from '@context/NotificationContext';
+import { messages } from "@utils/messages";
 
 export default function RegisterForm() {
     const navigate = useNavigate();

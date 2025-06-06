@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from './Header';
-import Sidebar from './Sidebar';
 import { Box, Toolbar, CssBaseline } from '@mui/material';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
+import Header from '@components/layouts/Header';
+import Sidebar from '@components/layouts/Sidebar';
 
 const Layout = () => {
 
@@ -13,6 +13,9 @@ const Layout = () => {
     '/employee/add': 'Add Employee',
     '/projects': 'Projects',
     '/project/add': 'Add Project',
+    '/senior/projects': 'Project Management',
+    '/senior/project': 'Project Details',
+    '/senior/my-tasks': 'My Tasks',
   };
 
   const location = useLocation();

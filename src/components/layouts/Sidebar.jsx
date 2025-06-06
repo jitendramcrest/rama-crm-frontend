@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Dashboard, People, Settings, Logout, Castle, FormatListBulleted, Grain} from '@mui/icons-material';
+import React from 'react';
+import { Dashboard, People, Logout, Castle, FormatListBulleted, Grain} from '@mui/icons-material';
 import {
   Drawer,
   Toolbar,
@@ -9,12 +9,12 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import authService from "../../services/auth";
 import { useDispatch } from "react-redux";
-import { setToken, setUser } from "../../redux/reducers/authDataSlice";
-import { useNotification } from '../../context/NotificationContext';
-import { messages } from "../../utils/messages";
-import { useLoader } from '../../context/LoaderContext';
+import { useLoader } from '@context/LoaderContext';
+import authService from "@services/auth";
+import { setToken, setUser } from "@redux/reducers/authDataSlice";
+import { useNotification } from '@context/NotificationContext';
+import { messages } from "@utils/messages";
 
 const Sidebar = ({ role }) => {
 
@@ -38,7 +38,8 @@ const Sidebar = ({ role }) => {
         ],
         senior: [
             { label: 'Dashboard', icon: <Dashboard />, path: '/' },
-            { label: 'Task', icon: <FormatListBulleted />, path: '/tasks' },
+            { label: 'My Projects', icon: <Castle />, path: '/senior/projects' },
+            { label: 'My Tasks', icon: <FormatListBulleted />, path: '/senior/my-tasks' },
             { label: 'Logout', icon: <Logout />, path: '/logout' },
         ],
         junior: [

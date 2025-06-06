@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import MagicButton from "../components/MagicButton";
 import { TextField, Button, Typography, Paper } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import authService from "../services/auth";
 import { useDispatch } from "react-redux";
-import { setToken, setUser } from "../redux/reducers/authDataSlice";
-import { useNotification } from '../context/NotificationContext';
-import { messages } from "../utils/messages";
+import MagicButton from "@components/common/MagicButton";
+import authService from "@services/auth";
+import { setToken, setUser } from "@redux/reducers/authDataSlice";
+import { useNotification } from '@context/NotificationContext';
+import { messages } from "@utils/messages";
 
 const Login = () => {
 

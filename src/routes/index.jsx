@@ -1,15 +1,18 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PrivateRoute from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
-import Layout from '../components/layouts';
-import RegisterPage from '../pages/RegisterPage';
-import Login from '../pages/Login';
-import Dashboard from '../pages/Dashboard';
-import Employee from '../pages/Employee/Index';
-import AddEmployee from '../pages/Employee/AddEmployee';
-import Project from '../pages/Project/IndexPage';
-import AddProject from '../pages/Project/AddProject';
-// import ProtectedPermissionRoute from "./ProtectedPermissionRoute";
+import PrivateRoute from "@routes/PrivateRoute";
+import PublicRoute from "@routes/PublicRoute";
+import Layout from '@components/layouts';
+import RegisterPage from '@pages/RegisterPage';
+import Login from '@pages/Login';
+import Dashboard from '@pages/Dashboard';
+import Employee from '@pages/Employee/Index';
+import AddEmployee from '@pages/Employee/AddEmployee';
+import Project from '@pages/Project/IndexPage';
+import AddProject from '@pages/Project/AddProject';
+import ProjectManagement from '@pages/Senior/ProjectManagement';
+import ProjectDetail from '@pages/Senior/ProjectDetail';
+import CreateTask from '@pages/Senior/CreateTask';
+import MyTasks from '@pages/Senior/MyTasks';
 
 function AppRouter() {
   return (
@@ -46,6 +49,31 @@ function AppRouter() {
             <Route path='/project/add' element={
               <PrivateRoute>
                 <AddProject />
+              </PrivateRoute>
+            } />
+
+            {/* Senior Management Routes */}
+            <Route path='/senior/projects' element={
+              <PrivateRoute>
+                <ProjectManagement />
+              </PrivateRoute>
+            } />
+
+            <Route path='/senior/project/:projectId' element={
+              <PrivateRoute>
+                <ProjectDetail />
+              </PrivateRoute>
+            } />
+
+            <Route path='/senior/project/:projectId/create-task' element={
+              <PrivateRoute>
+                <CreateTask />
+              </PrivateRoute>
+            } />
+
+            <Route path='/senior/my-tasks' element={
+              <PrivateRoute>
+                <MyTasks />
               </PrivateRoute>
             } />
 

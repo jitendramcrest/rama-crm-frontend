@@ -1,5 +1,5 @@
-import axiosInstance from "../helpers/apiClient";
-import handleApiResponse from "../helpers/handleApiResponse";
+import axiosInstance from "@helpers/apiClient";
+import handleApiResponse from "@helpers/handleApiResponse";
 
 class AuthService {
   async registerUser(user) {

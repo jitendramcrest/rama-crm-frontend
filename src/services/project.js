@@ -1,5 +1,5 @@
-import axiosInstance from "../helpers/apiClient";
-import handleApiResponse from "../helpers/handleApiResponse";
+import axiosInstance from "@helpers/apiClient";
+import handleApiResponse from "@helpers/handleApiResponse";
 
 class ProjectService {
   async fetchProjects() {
@@ -27,8 +27,8 @@ class ProjectService {
     return response;
   }
 
-  async fetchUserList() {
-    const response = handleApiResponse(axiosInstance.get('/project/user-list/'));
+  async fetchUserList(id) {
+    const response = handleApiResponse(axiosInstance.get(`/project/user-list/${id}`));
     return response;
   }
 }

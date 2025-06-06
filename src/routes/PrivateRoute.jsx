@@ -1,8 +1,8 @@
 import { Navigate, useNavigate, Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import authService from "../services/auth";
-import { logout } from "../redux/reducers/authDataSlice";
+import authService from "@services/auth";
+import { logout } from "@redux/reducers/authDataSlice";
 
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();

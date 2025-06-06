@@ -9,29 +9,28 @@ import {
   TableContainer,
   Dialog, 
   DialogTitle, 
-  DialogContent, 
-  DialogContentText, 
+  DialogContent,
   DialogActions, 
   Button, 
   Grid, 
   MenuItem,
-  TextField 
+  TextField,
+  IconButton, 
+  Tooltip
 } from '@mui/material';
 import { format, parseISO } from 'date-fns';
-import { IconButton, Tooltip } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
-import { useNotification } from '../context/NotificationContext';
-import { messages } from "../utils/messages";
-import employeeService from '../services/employee';
+import { Edit, Settings } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { enGB } from 'date-fns/locale';
-import MagicButton from "../components/MagicButton";
-import { useLoader } from '../context/LoaderContext';
-import DeleteRowDialog from "../components/DeleteRowDialog";
-import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '@context/NotificationContext';
+import { messages } from "@utils/messages";
+import employeeService from '@services/employee';
+import MagicButton from "@components/common/MagicButton";
+import { useLoader } from '@context/LoaderContext';
+import DeleteRowDialog from "@components/common/DeleteRowDialog";
 
 const EmployeeTable = ({ employees, onEmployeeUpdated }) => {
   const { showLoader, hideLoader } = useLoader();
@@ -302,7 +301,7 @@ const EmployeeTable = ({ employees, onEmployeeUpdated }) => {
                 />
                 <Tooltip title="Setting">
                   <IconButton color="success" onClick={() => handleSetting(emp.id)}>
-                    <SettingsIcon />
+                    <Settings />
                   </IconButton>
                 </Tooltip>
               </TableCell>

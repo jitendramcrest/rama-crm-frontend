@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import projectService from '../../services/project';
-import ProjectTable from '../../components/ProjectTable';
-import { useLoader } from '../../context/LoaderContext';
-import { useNotification } from '../../context/NotificationContext';
-import MagicButton from '../../components/MagicButton';
 import { Grid } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import projectService from '@services/project';
+import ProjectTable from '@features/projects/ProjectTable';
+import { useLoader } from '@context/LoaderContext';
+import { useNotification } from '@context/NotificationContext';
+import MagicButton from "@components/common/MagicButton";
 
 const IndexPage = () => {
     const { showLoader, hideLoader } = useLoader();

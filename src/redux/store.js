@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authDataSlice from "../redux/reducers/authDataSlice";
+import authDataSlice from "@redux/reducers/authDataSlice";
 import { persistStore } from "redux-persist";
 
 const store = configureStore({

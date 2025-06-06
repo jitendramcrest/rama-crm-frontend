@@ -6,7 +6,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Typography
+  Typography,
+  Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -16,6 +17,7 @@ const DeleteRowDialog = ({
   message = 'Are you sure you want to delete this item?',
   buttonText = 'Delete',
   title = 'Confirm Delete',
+  tooltip = 'Delete Item'
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -26,12 +28,14 @@ const DeleteRowDialog = ({
 
   return (
     <>
-      <IconButton
-        onClick={() => setOpen(true)}
-        color="secondary"
-      >
-        <DeleteIcon />
-      </IconButton>
+      <Tooltip title={tooltip}>
+        <IconButton
+          onClick={() => setOpen(true)}
+          color="secondary"
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{title}</DialogTitle>

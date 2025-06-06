@@ -14,10 +14,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { enGB } from 'date-fns/locale';
-import { useNotification } from '../../context/NotificationContext';
-import { messages } from "../../utils/messages";
-import MagicButton from "../../components/MagicButton";
-import projectService from '../../services/project';
+import { useNotification } from '@context/NotificationContext';
+import { messages } from "@utils/messages";
+import MagicButton from "@components/common/MagicButton";
+import projectService from '@services/project';
 
 const AddProject = () => {
     const navigate = useNavigate();

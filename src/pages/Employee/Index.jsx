@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import employeeService from '../../services/employee';
-import EmployeeTable from '../../components/EmployeeTable';
-import { useLoader } from '../../context/LoaderContext';
-import { useNotification } from '../../context/NotificationContext';
-import MagicButton from '../../components/MagicButton';
 import { Grid } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import employeeService from '@services/employee';
+import EmployeeTable from '@features/employees/EmployeeTable';
+import { useLoader } from '@context/LoaderContext';
+import { useNotification } from '@context/NotificationContext';
+import MagicButton from "@components/common/MagicButton";
 
 const EmployeePage = () => {
     const { showLoader, hideLoader } = useLoader();
