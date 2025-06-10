@@ -22,7 +22,6 @@ import { useNavigate } from 'react-router-dom';
 import { useLoader } from '@context/LoaderContext';
 import { useNotification } from '@context/NotificationContext';
 import taskService from '@services/task';
-import MagicButton from '@components/common/MagicButton';
 
 const ProjectManagement = () => {
   const navigate = useNavigate();
@@ -96,16 +95,6 @@ const ProjectManagement = () => {
     return statusColors[status] || 'default';
   };
 
-  const getTaskStatusColor = (status) => {
-    const statusColors = {
-      'pending': 'warning',
-      'in_progress': 'info',
-      'completed': 'success',
-      'cancelled': 'error'
-    };
-    return statusColors[status] || 'default';
-  };
-
   const handleProjectClick = (projectId) => {
     navigate(`/senior/project/${projectId}`);
   };
@@ -131,7 +120,7 @@ const ProjectManagement = () => {
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -147,7 +136,7 @@ const ProjectManagement = () => {
         </Grid>
         
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-green-500 to-green-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -163,7 +152,7 @@ const ProjectManagement = () => {
         </Grid>
         
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-orange-500 to-orange-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -179,7 +168,7 @@ const ProjectManagement = () => {
         </Grid>
         
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-purple-500 to-purple-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -200,7 +189,7 @@ const ProjectManagement = () => {
         {projects.map((project) => (
           <Grid item xs={12} md={6} lg={4} key={project.id}>
             <Card 
-              className="hover:shadow-lg transition-shadow cursor-pointer"
+              className="transition-shadow cursor-pointer hover:shadow-lg"
               onClick={() => handleProjectClick(project.id)}
             >
               <CardContent>
@@ -247,17 +236,6 @@ const ProjectManagement = () => {
                   <Typography variant="body2">
                     Tasks: {project.tasks?.length || 0}
                   </Typography>
-                  {/* <Box display="flex" gap={0.5}>
-                    {project.tasks?.slice(0, 3).map((task, index) => (
-                      <Chip
-                        key={index}
-                        label={task.status}
-                        color={getTaskStatusColor(task.status)}
-                        size="small"
-                        variant="outlined"
-                      />
-                    ))}
-                  </Box> */}
                 </Box>
                 
                 {/* Actions */}

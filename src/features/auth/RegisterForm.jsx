@@ -90,28 +90,28 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-tr from-purple-900 via-indigo-900 to-black flex items-center justify-center overflow-hidden">
+        <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-tr from-purple-900 via-indigo-900 to-black">
             {/* Sparkles and glows */}
-            <div className="absolute top-10 left-10 w-40 h-40 bg-pink-500 rounded-full opacity-30 blur-3xl animate-ping"></div>
-            <div className="absolute bottom-20 right-20 w-60 h-60 bg-cyan-500 rounded-full opacity-20 blur-2xl animate-pulse"></div>
-            <div className="absolute top-1/4 right-1/3 w-32 h-32 bg-yellow-400 rounded-full opacity-20 blur-2xl animate-ping"></div>
-            <div className="absolute -bottom-10 left-1/4 w-96 h-96 bg-purple-700 opacity-25 blur-3xl rounded-full animate-spin-slow"></div>
+            <div className="absolute w-40 h-40 bg-pink-500 rounded-full top-10 left-10 opacity-30 blur-3xl animate-ping"></div>
+            <div className="absolute rounded-full bottom-20 right-20 w-60 h-60 bg-cyan-500 opacity-20 blur-2xl animate-pulse"></div>
+            <div className="absolute w-32 h-32 bg-yellow-400 rounded-full top-1/4 right-1/3 opacity-20 blur-2xl animate-ping"></div>
+            <div className="absolute bg-purple-700 rounded-full opacity-25 -bottom-10 left-1/4 w-96 h-96 blur-3xl animate-spin-slow"></div>
 
             <Paper elevation={10}
-            className="relative z-10 p-10 max-w-md w-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl">
+            className="relative z-10 w-full max-w-md p-10 border shadow-2xl bg-white/10 backdrop-blur-xl border-white/20 rounded-3xl">
                 <Typography
                     variant="h6"
-                    className="text-black text-center mb-2 drop-shadow-md"
+                    className="mb-2 text-center text-black drop-shadow-md"
                 >Rama CRM
                 </Typography>
-                <p className="text-white text-center text-sm mb-1">.....</p>
+                <p className="mb-1 text-sm text-center text-white">.....</p>
                 <form className="space-y-5">
                     <TextField label="Name" variant="outlined" name="name" value={form.name} onChange={handleChange} required fullWidth />
-                    {error?.name && <p className="text-red-500 text-sm">{error.name[0]}</p>}
+                    {error?.name && <p className="text-sm text-red-500">{error.name[0]}</p>}
                     <TextField label="Email" variant="outlined" name="email" value={form.email} onChange={handleChange} required fullWidth type="email" />
-                    {error?.email && <p className="text-red-500 text-sm">{error.email[0]}</p>}
+                    {error?.email && <p className="text-sm text-red-500">{error.email[0]}</p>}
                     <TextField label="Password" variant="outlined" name="password" value={form.password} onChange={handleChange} required fullWidth type="password" />
-                    {error?.password && <p className="text-red-500 text-sm">{error.password[0]}</p>}
+                    {error?.password && <p className="text-sm text-red-500">{error.password[0]}</p>}
                     <TextField
                     select
                     label="Role"
@@ -128,12 +128,12 @@ export default function RegisterForm() {
                         </MenuItem>
                     ))}
                     </TextField>
-                    {error?.role && <p className="text-red-500 text-sm">{error.role[0]}</p>}
+                    {error?.role && <p className="text-sm text-red-500">{error.role[0]}</p>}
                     <MagicButton onClick={handleSubmit}>Register</MagicButton>
                 </form>
             </Paper>
 
-            <div className="absolute inset-0 pointer-events-none z-0">
+            <div className="absolute inset-0 z-0 pointer-events-none">
                 {[...Array(20)].map((_, i) => (
                 <div
                     key={i}

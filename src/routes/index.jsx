@@ -12,6 +12,7 @@ import AddProject from '@pages/Project/AddProject';
 import ProjectManagement from '@pages/Senior/ProjectManagement';
 import ProjectDetail from '@pages/Senior/ProjectDetail';
 import CreateTask from '@pages/Senior/CreateTask';
+import EditTask from '@pages/Senior/EditTask';
 import MyTasks from '@pages/Senior/MyTasks';
 
 function AppRouter() {
@@ -74,6 +75,12 @@ function AppRouter() {
             <Route path='/senior/my-tasks' element={
               <PrivateRoute>
                 <MyTasks />
+              </PrivateRoute>
+            } />
+
+            <Route path='/senior/project/:projectId/edit-task/:taskId' element={
+              <PrivateRoute>
+                <EditTask />
               </PrivateRoute>
             } />
 

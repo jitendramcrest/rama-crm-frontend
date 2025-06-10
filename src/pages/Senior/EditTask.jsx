@@ -19,7 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { useNavigate, useParams } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 import { ArrowBack } from '@mui/icons-material';
 import { useNotification } from '@context/NotificationContext';
@@ -29,8 +29,8 @@ import MagicButton from "@components/common/MagicButton";
 import SecondaryMagicButton from "@components/common/SecondaryMagicButton";
 import taskService from '@services/task';
 
-const CreateTask = () => {
-  const { projectId } = useParams();
+const EditTask = () => {
+  const { projectId, taskId } = useParams();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
   const { showLoader, hideLoader } = useLoader();
@@ -66,6 +66,7 @@ const CreateTask = () => {
     title: '',
     description: '',
     project_id: projectId,
+    task_id: taskId,
     assigned_to: [],
     priority: 'medium',
     status: 'pending',
@@ -76,9 +77,42 @@ const CreateTask = () => {
   useEffect(() => {
     if (projectId) {
       fetchProjectDetails();
+      fetchTaskDetails();
       fetchProjectMembers();
     }
   }, [projectId]);
+
+  const fetchTaskDetails = async () => {
+    try {
+      const response = await taskService.getTask(taskId);
+      if (response?.success) {
+
+        console.log(response?.data);
+        const taskData = response?.data;
+        const due_date = response?.data?.due_date ? parseISO(response?.data?.due_date) : null;
+        
+        const assignUser = response?.assign_user;
+        setFormData({
+          title: taskData?.title,
+          description: taskData?.description,
+          project_id: taskData?.project_id,
+          task_id: taskData?.id,
+          assigned_to: assignUser,
+          priority: taskData?.priority,
+          status: taskData?.status,
+          due_date: due_date,
+          estimated_hours: taskData?.estimated_hours
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching task details:', error);
+      showNotification({
+        message: 'Failed to load task details',
+        severity: 'error',
+        position: 'top-center',
+      });
+    }
+  };
 
   const fetchProjectDetails = async () => {
     try {
@@ -161,9 +195,10 @@ const CreateTask = () => {
     };
 
     console.log(formattedData);
+    // return;
     try {
       showLoader();
-      const res = await taskService.createTask(formattedData);
+      const res = await taskService.updateTask(taskId,formattedData);
       
       if (res.status === 422) {
         setError(res?.response?.data);
@@ -176,7 +211,7 @@ const CreateTask = () => {
         });
       } else if (res?.success) {
         showNotification({
-          message: 'Task created successfully!',
+          message: 'Task updated successfully!',
           severity: 'success',
           position: 'top-center',
         });
@@ -223,7 +258,7 @@ const CreateTask = () => {
           </IconButton>
           <Box>
             <Typography variant="h5" gutterBottom>
-              Create New Task
+              Edit Task
             </Typography>
             {project && (
               <Typography variant="subtitle1" color="text.secondary">
@@ -361,7 +396,7 @@ const CreateTask = () => {
               <MagicButton
                 type="submit"
               >
-                Create Task
+                Edit Task
               </MagicButton>
             </Box>
           </Grid>
@@ -371,5 +406,5 @@ const CreateTask = () => {
   );
 };
 
-export default CreateTask;
+export default EditTask;
 

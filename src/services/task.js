@@ -21,7 +21,7 @@ class TaskService {
 
   // Fetch tasks assigned to current user
   async fetchMyTasks() {
-    const response = handleApiResponse(axiosInstance.get("/tasks/my-tasks"));
+    const response = handleApiResponse(axiosInstance.get("/my-tasks"));
     return response;
   }
 

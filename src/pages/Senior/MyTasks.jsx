@@ -4,10 +4,10 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
+  MenuItem,
   Box,
   Chip,
-  Avatar,
+  Menu,
   Table,
   TableBody,
   TableCell,
@@ -16,7 +16,13 @@ import {
   TableRow,
   Paper,
   IconButton,
-  LinearProgress
+  LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button 
 } from '@mui/material';
 import {
   Assignment,
@@ -30,17 +36,32 @@ import { useNavigate } from 'react-router-dom';
 import { useLoader } from '@context/LoaderContext';
 import { useNotification } from '@context/NotificationContext';
 import taskService from '@services/task';
+import MagicButton from '@components/common/MagicButton';
+import SecondaryMagicButton from '@components/common/SecondaryMagicButton';
 
 const MyTasks = () => {
   const navigate = useNavigate();
   const { showLoader, hideLoader } = useLoader();
   const { showNotification } = useNotification();
   const [tasks, setTasks] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalMode, setModalMode] = useState('');
+  const [error, setError] = useState({});
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
     inProgress: 0,
     completed: 0
+  });
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    task_id: "",
+    priority: '',
+    estimated_hours: ''
   });
 
   useEffect(() => {
@@ -58,10 +79,10 @@ const MyTasks = () => {
         
         // Calculate stats
         const total = taskData.length;
-        const pending = taskData.filter(t => t.status === 'pending').length;
-        const inProgress = taskData.filter(t => t.status === 'in_progress').length;
-        const completed = taskData.filter(t => t.status === 'completed').length;
-        
+        const pending = taskData.filter(item => item.task?.status === 'pending').length;
+        const inProgress = taskData.filter(item => item.task?.status === 'in_progress').length;
+        const completed = taskData.filter(item => item.task?.status === 'completed').length;
+
         setStats({ total, pending, inProgress, completed });
         
         showNotification({
@@ -113,7 +134,29 @@ const MyTasks = () => {
     return status !== 'completed' && new Date(dueDate) < new Date();
   };
 
-  const handleStatusUpdate = async (taskId, newStatus) => {
+  const handleMenuOpen = (event, task) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTask(task);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedTask(null);
+  };
+
+  const getStatusName = (status) => {
+
+    const statusColors = {
+      'pending': 'Pending',
+      'in_progress': 'In Progress',
+      'completed': 'Completed',
+      'cancelled': 'Cancelled'
+    };
+    return statusColors[status] || 'default';
+
+  }
+
+  const handleStatusChange = async (taskId, newStatus) => {
     try {
       const response = await taskService.updateTaskStatus(taskId, newStatus);
       if (response?.success) {
@@ -135,6 +178,29 @@ const MyTasks = () => {
 
   const completionPercentage = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
 
+  const handleOpenModal = (mode, task) => {
+    setModalMode(mode);
+    setSelectedTask(task);
+    setOpenModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedTask(null);
+    setModalMode('');
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(prev => ({ ...prev, [e.target.name]: null }));
+  };
+
+  const handleSaveTask = (task) => {
+    // Send update request to backend...
+    console.log('Saving', task);
+    // handleCloseModal();
+  };
+  
   return (
     <>
       {/* Header */}
@@ -152,7 +218,7 @@ const MyTasks = () => {
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -168,7 +234,7 @@ const MyTasks = () => {
         </Grid>
         
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-orange-500 to-orange-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -184,7 +250,7 @@ const MyTasks = () => {
         </Grid>
         
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-yellow-500 to-yellow-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -200,7 +266,7 @@ const MyTasks = () => {
         </Grid>
         
         <Grid item xs={12} sm={6} md={3}>
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg">
+          <Card className="text-white shadow-lg bg-gradient-to-r from-green-500 to-green-600">
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -268,12 +334,12 @@ const MyTasks = () => {
                     <TableCell>
                       <Box>
                         <Typography variant="body1" fontWeight="medium">
-                          {task.title}
+                          {task?.task?.title}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" noWrap>
-                          {task.description?.length > 50 
-                            ? `${task.description.substring(0, 50)}...` 
-                            : task.description}
+                          {task?.task?.description?.length > 50 
+                            ? `${task?.task?.description.substring(0, 50)}...` 
+                            : task?.task?.description}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -284,54 +350,75 @@ const MyTasks = () => {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={task.priority}
-                        color={getPriorityColor(task.priority)}
+                        label={task?.task?.priority}
+                        color={getPriorityColor(task?.task?.priority)}
                         size="small"
                         variant="outlined"
                       />
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={task.status.replace('_', ' ')}
-                        color={getStatusColor(task.status)}
+                        label={getStatusName(task?.task?.status)}
+                        color={getStatusColor(task?.task?.status)}
                         size="small"
-                        onClick={() => {
-                          // Quick status change menu could be implemented here
+                        onClick={(e) => {
+                          handleMenuOpen(e, task)
                         }}
                       />
                     </TableCell>
                     <TableCell>
                       <Typography 
                         variant="body2"
-                        color={isOverdue(task.due_date, task.status) ? 'error' : 'text.primary'}
+                        color={isOverdue(task?.task?.due_date, task?.task?.status) ? 'error' : 'text.primary'}
                       >
-                        {formatDate(task.due_date)}
-                        {isOverdue(task.due_date, task.status) && ' (Overdue)'}
+                        {formatDate(task?.task?.due_date)}
+                        {isOverdue(task?.task?.due_date, task?.task?.status) && ' (Overdue)'}
                       </Typography>
                     </TableCell>
+
                     <TableCell>
                       <Box display="flex" gap={1}>
                         <IconButton
                           size="small"
-                          onClick={() => navigate(`/senior/task/${task.id}`)}
+                          onClick={() => handleOpenModal('view', task)}
                           title="View Details"
                         >
                           <Visibility fontSize="small" />
                         </IconButton>
                         <IconButton
                           size="small"
-                          onClick={() => navigate(`/senior/task/${task.id}/edit`)}
+                          onClick={() => handleOpenModal('edit', task)}
                           title="Edit Task"
                         >
                           <Edit fontSize="small" />
                         </IconButton>
                       </Box>
                     </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem key="pending" onClick={() => handleStatusChange(selectedTask?.task?.id,'pending')}>
+              Pending
+            </MenuItem>
+            <MenuItem key="in_progress" onClick={() => handleStatusChange(selectedTask?.task?.id,'in_progress')}>
+              In Progress
+            </MenuItem>
+            <MenuItem key="completed" onClick={() => handleStatusChange(selectedTask?.task?.id,'completed')}>
+              Completed
+            </MenuItem>
+            <MenuItem key="cancelled" onClick={() => handleStatusChange(selectedTask?.task?.id,'cancelled')}>
+              Cancelled
+            </MenuItem>
+          </Menu>
           
           {tasks.length === 0 && (
             <Box textAlign="center" py={4}>
@@ -343,6 +430,73 @@ const MyTasks = () => {
               </Typography>
             </Box>
           )}
+
+          <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
+            <DialogTitle>{modalMode === 'view' ? 'Task Details' : 'Edit Task'}</DialogTitle>
+            <DialogContent>
+              {modalMode === 'view' ? (
+                <>
+                  <p><strong>Title:</strong> {selectedTask?.task?.title}</p>
+                  <p><strong>Description:</strong> {selectedTask?.task?.description}</p>
+
+                  <p><strong>Priority:</strong> {selectedTask?.task?.priority}</p>
+                  <p><strong>Status:</strong> {getStatusName(selectedTask?.task?.status)}</p>
+                  <p><strong>Estimate Hours:</strong> {selectedTask?.task?.estimated_hours}</p>
+                  <p><strong>Due Date:</strong> {formatDate(selectedTask?.task?.due_date)}</p>
+                </>
+              ) : (
+                <>
+                 <form>
+                    <Grid container spacing={3}>
+                      <TextField
+                        label="Task Title"
+                        variant="outlined"
+                        name="title"
+                        value={selectedTask?.task?.title || ''}
+                        onChange={handleChange}
+                        fullWidth
+                        error={!!error?.title}
+                        helperText={error?.title?.[0]}
+                      />
+                      
+                      <TextField
+                        label="Description"
+                        variant="outlined"
+                        name="description"
+                        value={selectedTask?.task?.description || ''}
+                        onChange={handleChange}
+                        fullWidth
+                        multiline
+                        rows={4}
+                        error={!!error?.description}
+                        helperText={error?.description?.[0]}
+                      />
+                    </Grid>
+                  </form>
+                </>
+              )}
+            </DialogContent>
+            <DialogActions>
+
+              <SecondaryMagicButton
+                type="submit"
+                variant="outlined"
+                onClick={handleCloseModal}
+              >
+                Cancel
+              </SecondaryMagicButton>
+
+              {modalMode === 'edit' && <MagicButton
+                type="submit"
+                onClick={() => handleSaveTask(selectedTask)}
+              >
+                Create Task
+              </MagicButton> }
+
+            </DialogActions>
+          </Dialog>
+
+
         </CardContent>
       </Card>
     </>

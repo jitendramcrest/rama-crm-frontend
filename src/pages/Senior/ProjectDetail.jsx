@@ -14,7 +14,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   IconButton,
   Menu,
   MenuItem,
@@ -37,7 +36,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLoader } from '@context/LoaderContext';
 import { useNotification } from '@context/NotificationContext';
 import taskService from '@services/task';
-import projectService from '@services/project';
 import MagicButton from '@components/common/MagicButton';
 
 const ProjectDetail = () => {
@@ -51,6 +49,7 @@ const ProjectDetail = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [menuItem, setMenuItem] = useState(true);
 
   useEffect(() => {
     if (projectId) {
@@ -67,7 +66,6 @@ const ProjectDetail = () => {
         setProject(response.data);
       }
     } catch (error) {
-      console.error('Error fetching project details:', error);
       showNotification({
         message: 'Failed to load project details',
         severity: 'error',
@@ -83,7 +81,6 @@ const ProjectDetail = () => {
         setTasks(response.data || []);
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error);
       showNotification({
         message: 'Failed to load tasks',
         severity: 'error',
@@ -99,7 +96,6 @@ const ProjectDetail = () => {
         setMembers(response.data || []);
       }
     } catch (error) {
-      console.error('Error fetching members:', error);
       showNotification({
         message: 'Failed to load team members',
         severity: 'error',
@@ -108,7 +104,14 @@ const ProjectDetail = () => {
     }
   };
 
-  const handleMenuOpen = (event, task) => {
+  const handleMenuOpen = (event, task, status) => {
+    
+    if (status == 'action') {
+      setMenuItem(true);
+    } else {
+      setMenuItem(false);
+    }
+
     setAnchorEl(event.currentTarget);
     setSelectedTask(task);
   };
@@ -119,7 +122,7 @@ const ProjectDetail = () => {
   };
 
   const handleEditTask = () => {
-    navigate(`/senior/task/${selectedTask.id}/edit`);
+    navigate(`/senior/project/${projectId}/edit-task/${selectedTask.id}`);
     handleMenuClose();
   };
 
@@ -178,14 +181,17 @@ const ProjectDetail = () => {
     return statusColors[status] || 'default';
   };
 
-  const getPriorityColor = (priority) => {
-    const priorityColors = {
-      'low': 'success',
-      'medium': 'warning',
-      'high': 'error'
+  const getStatusName = (status) => {
+
+    const statusColors = {
+      'pending': 'Pending',
+      'in_progress': 'In Progress',
+      'completed': 'Completed',
+      'cancelled': 'Cancelled'
     };
-    return priorityColors[priority] || 'default';
-  };
+    return statusColors[status] || 'default';
+
+  }
 
   if (!project) {
     return (
@@ -227,11 +233,6 @@ const ProjectDetail = () => {
                 <Schedule color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6">Project Status</Typography>
               </Box>
-              <Chip 
-                label={project.status || 'Active'}
-                color={getStatusColor(project.status || 'active')}
-                size="large"
-              />
               <Typography variant="body2" color="text.secondary" mt={1}>
                 Deadline: {new Date(project.deadline).toLocaleDateString()}
               </Typography>
@@ -325,7 +326,7 @@ const ProjectDetail = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {tasks.slice(0, 5).map((task) => (
+                    {tasks.map((task, index) => (
                       <TableRow key={task.id}>
                         <TableCell>
                           <Typography variant="body2" fontWeight="medium">
@@ -336,29 +337,31 @@ const ProjectDetail = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
+                        {task.task_assignment.map((ta, jindex) => (
                           <Box display="flex" alignItems="center">
                             <Avatar sx={{ width: 24, height: 24, mr: 1, fontSize: '0.75rem' }}>
-                              {task.assigned_to?.name?.charAt(0) || 'U'}
+                              {ta.assigned_to?.name?.charAt(0) || 'U'}
                             </Avatar>
                             <Typography variant="body2">
-                              {task.assigned_to?.name || 'Unassigned'}
+                              {ta.assigned_to?.name || 'Unassigned'}
                             </Typography>
                           </Box>
+                        ))}
                         </TableCell>
                         <TableCell>
                           <Chip
-                            label={task.status}
+                            label={getStatusName(task.status)}
                             color={getStatusColor(task.status)}
                             size="small"
-                            onClick={() => {
-                              // Add status change logic here
+                            onClick={(e) => {
+                              handleMenuOpen(e, task, 'status')
                             }}
                           />
                         </TableCell>
                         <TableCell>
                           <IconButton
                             size="small"
-                            onClick={(e) => handleMenuOpen(e, task)}
+                            onClick={(e) => handleMenuOpen(e, task, 'action')}
                           >
                             <MoreVert />
                           </IconButton>
@@ -386,18 +389,39 @@ const ProjectDetail = () => {
       </Grid>
 
       {/* Context Menu */}
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditTask}>
-          <Edit sx={{ mr: 1 }} /> Edit Task
-        </MenuItem>
-        <MenuItem onClick={() => setDeleteDialogOpen(true)}>
-          <Delete sx={{ mr: 1 }} /> Delete Task
-        </MenuItem>
+        {!menuItem ? (
+          [
+            <MenuItem key="pending" onClick={() => handleStatusChange(selectedTask.id,'pending')}>
+              Pending
+            </MenuItem>,
+            <MenuItem key="in_progress" onClick={() => handleStatusChange(selectedTask.id,'in_progress')}>
+              In Progress
+            </MenuItem>,
+            <MenuItem key="completed" onClick={() => handleStatusChange(selectedTask.id,'completed')}>
+              Completed
+            </MenuItem>,
+            <MenuItem key="cancelled" onClick={() => handleStatusChange(selectedTask.id,'cancelled')}>
+              Cancelled
+            </MenuItem>,
+          ]
+        ) : (
+          [
+            <MenuItem key="edit" onClick={handleEditTask}>
+              <Edit sx={{ mr: 1 }} /> Edit Task
+            </MenuItem>,
+            <MenuItem key="delete" onClick={() => setDeleteDialogOpen(true)}>
+              <Delete sx={{ mr: 1 }} /> Delete Task
+            </MenuItem>,
+          ]
+        )}
       </Menu>
+
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
